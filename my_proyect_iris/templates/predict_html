@@ -1,0 +1,22 @@
+from pyexpat import model
+from tempfile import template
+from fastapi import Form, Request
+from fastapi.responses import HTMLResponse
+from flask import app
+import numpy as np
+
+
+@app.post("/predict-html", response_class=HTMLResponse)
+async def predict_html(
+    request: Request,
+    sepal_length: float = Form(...),
+    sepal_width: float = Form(...),
+    petal_length: float = Form(...),
+    petal_width: float = Form(...)
+):
+    print(f"Datos recibidos: {sepal_length}, {sepal_width}, {petal_length}, {petal_width}")
+    datos = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+    pred = model.predict(datos)[0]
+    print("Predicción modelo:", pred)
+    clase = clase[pred]
+    return template.TemplateResponse("resultado.html", {"request": request, "clase": clase})
